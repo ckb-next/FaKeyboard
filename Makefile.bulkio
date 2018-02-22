@@ -1,8 +1,8 @@
-PROG=BulkIO
+PROG=strafe
 
 include common-src.mk
 
-SRC_FILES += BulkIO.cc
+SRC_FILES += strafe.cc
 
 include build-rules.mk
 

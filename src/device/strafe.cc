@@ -25,6 +25,16 @@ using namespace UsbUtil;
 #include "Verbose.h"
 using namespace Verbose;
 
+/* HID bRequest fields. */
+enum {
+    GET_REPORT = 1,
+    GET_IDLE = 2,
+    GET_PROTOCOL = 3,
+    SET_REPORT = 9,
+    SET_IDLE = 10,
+    SET_PROTOCOL = 11
+};
+
 int HIDEndpoint::Data(uint8_t* inData, uint8_t* outBuffer, int length)
 {
     (void)outBuffer;
@@ -122,9 +132,14 @@ int HIDInterface::InRequest(uint8_t* usbSetup, uint8_t* dataIn, uint8_t* dataOut
     (void)dataOut;
 
     uint8_t bRequest = usbSetup[1];
-    if (bRequest == 0x0a) {
+   
+    if (bRequest == SET_REPORT) {
+        /* black hole SET_REPORTs as meaningless. */
+        return 0;
+    }
+    if (bRequest == SET_IDLE) {
 	/* stall this request */
-	return EP_STALL;
+	return 0;
     }
 
     ERROR_VECTOR("Unknown InRequest UsbInterface", usbSetup, 8);

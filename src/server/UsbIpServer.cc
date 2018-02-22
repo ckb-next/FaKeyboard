@@ -123,11 +123,11 @@ bool UsbIpServer::ConnectedClients() {
 void UsbIpServer::StopServer() {
     if (serverWorkerActive) {
 	killServerWorker = true;
-	int oldActioveClients = -1;
+	int oldActiveClients = -1;
 	while((serverWorkerActive) || (activeClients > 0)) {
-	    if (activeClients != oldActioveClients) {
+	    if (activeClients != oldActiveClients) {
 		INFO("Active socket clients %d", activeClients);
-		oldActioveClients = activeClients;
+		oldActiveClients = activeClients;
 	    }
 	    milliSleep(500);
 	}

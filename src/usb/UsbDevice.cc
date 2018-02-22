@@ -109,18 +109,15 @@ int UsbDevice::OutRequest(uint8_t* usbSetup, uint8_t* dataIn, uint8_t* dataOut, 
 }
 
 int UsbDevice::GetDeviceDescriptor(uint8_t* buffer, int transferLength) {
+    (void)transferLength;
     int pos = 0;
-    pos += SetUint(18,                  buffer, pos, 1);
-    pos += SetUint(1,                   buffer, pos, 1);
-    pos += SetUint(USB_VERSION,         buffer, pos, 2);
+    pos += SetUint(18,                  buffer, pos, 1); // bLength
+    pos += SetUint(1,                   buffer, pos, 1); // bDescriptorType
+    pos += SetUint(USB_VERSION,         buffer, pos, 2); // bcdUSB
     pos += SetUint(bDeviceClass,        buffer, pos, 1);
     pos += SetUint(bDeviceSubClass,     buffer, pos, 1);
     pos += SetUint(bDeviceProtocol,     buffer, pos, 1);
-    if (transferLength < 64) {
-	pos += SetUint(transferLength,  buffer, pos, 1);
-    } else {
-	pos += SetUint(64,              buffer, pos, 1);
-    }
+    pos += SetUint(64,                  buffer, pos, 1); // bMaxPacketSize0
     pos += SetUint(idVendor,            buffer, pos, 2);
     pos += SetUint(idProduct,           buffer, pos, 2);
     pos += SetUint(bcdDevice,           buffer, pos, 2);

@@ -17,7 +17,7 @@
 #include "UsbUtil.h"
 #include "Verbose.h"
 
-#define USB_VERSION 0x0110
+#define USB_VERSION 0x0200
 
 using namespace Verbose;
 using namespace UsbUtil;

@@ -54,7 +54,7 @@ public:
 
     int GenerateInterfaceDescriptor(uint8_t* buffer, int offset);
     int GetDescriptor(uint8_t* setup, uint8_t* data, uint8_t* replyBuffer, int bufLength);
-    int OutRequest(uint8_t* usbSetup, uint8_t* data, uint8_t* replyBuffer, int transferLength);
+    int InRequest(uint8_t* usbSetup, uint8_t* data, uint8_t* replyBuffer, int transferLength);
 private:
     int GenerateHIDReportDescriptor(uint8_t* buffer, int offset);
     HIDEndpoint endpoint;

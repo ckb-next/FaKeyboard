@@ -118,14 +118,17 @@ int HIDInterface::GetDescriptor(uint8_t* setup, uint8_t* data, uint8_t* replyBuf
     return UsbInterface::GetDescriptor(setup, data, replyBuffer, bufLength);
 }
 
-int HIDInterface::OutRequest(uint8_t* usbSetup, uint8_t* data, uint8_t* replyBuffer, int transferLength)
-{
-    uint8_t bRequest = usbSetup[1];
-    printf("UsbInterface: OutRequest %.2x", bRequest);
+int HIDInterface::InRequest(uint8_t* usbSetup, uint8_t* dataIn, uint8_t* dataOut, int transferLength) {
+    (void)dataOut;
 
-    if (bRequest == 0x06) {
-        return GetDescriptor(usbSetup, data, replyBuffer, transferLength);
+    uint8_t bRequest = usbSetup[1];
+    if (bRequest == 0x0a) {
+	/* stall this request */
+	return EP_STALL;
     }
+
+    ERROR_VECTOR("Unknown InRequest UsbInterface", usbSetup, 8);
+    ERROR_VECTOR("Data packet follows", dataIn, transferLength);
     return EP_STALL;
 }
 

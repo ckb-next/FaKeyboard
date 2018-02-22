@@ -120,11 +120,12 @@ int HIDInterface::GetDescriptor(uint8_t* setup, uint8_t* data, uint8_t* replyBuf
 
 int HIDInterface::OutRequest(uint8_t* usbSetup, uint8_t* data, uint8_t* replyBuffer, int transferLength)
 {
-    (void)usbSetup;
-    (void)data;
-    (void)replyBuffer;
-    (void)transferLength;
+    uint8_t bRequest = usbSetup[1];
+    printf("UsbInterface: OutRequest %.2x", bRequest);
 
+    if (bRequest == 0x06) {
+        return GetDescriptor(usbSetup, data, replyBuffer, transferLength);
+    }
     return EP_STALL;
 }
 

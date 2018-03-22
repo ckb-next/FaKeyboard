@@ -1,0 +1,20 @@
+CC=i686-w64-mingw32-gcc
+CFLAGS= -Wall -mno-ms-bitfields
+PROGS= hid-mouse hid-keyboard cdc-acm
+
+all:	${PROGS}
+
+hid-mouse:	usbip.c hid-mouse.c 
+		${CC} ${CFLAGS} usbip.c -c 
+		${CC} ${CFLAGS} usbip.o hid-mouse.c -o hid-mouse.exe -lws2_32 
+
+hid-keyboard:	usbip.c hid-keyboard.c 
+		${CC} ${CFLAGS} usbip.c -c 
+		${CC} ${CFLAGS} usbip.o hid-keyboard.c -o hid-keyboard.exe -lws2_32 
+
+cdc-acm:	usbip.c cdc-acm.c 
+		${CC} ${CFLAGS} usbip.c -c 
+		${CC} ${CFLAGS} usbip.o cdc-acm.c -o cdc-acm.exe -lws2_32 
+
+clean:
+		rm -f ${PROGS} core core.* *.o temp.* *.out typescript* *.exe

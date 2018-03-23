@@ -314,17 +314,20 @@ void handle_data(int sockfd, USBIP_RET_SUBMIT* usb_req, int bl)
                 printf("%02x ", buffer[i]);
             puts("");
             send_corsair_req(sockfd, usb_req, "", 0x40, 0);
-            if(buffer[0] == 0x0e && buffer[1] == 01)
+            if(buffer[0] == 0x0e)
             {
-                /*usb_req->seqnum = seqnum82;
-                char response[BSIZE + 1] = { 0x0e, 0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x04, 0x02, 0x14, 0x00, 0x1c, 0x1b, 0x15, 0x1b, 0x01, 0x01, 0x01, 0x07, 0xc0, 0xff, 0x40, 0x01, 0x03, 0x00, 0x00, 0x00, 0x02, 0x04, 0x01, 0x00 };
-                send_corsair_req(sockfd, usb_req, response, 64, 0);*/
+                usb_req->seqnum = seqnum82;
+                if(buffer[1] == 01)
+                {
+                    char response[BSIZE + 1] = { 0x0e, 0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x05, 0x02, 0x14, 0x00, 0x1c, 0x1b, 0x15, 0x1b, 0x01, 0x01, 0x01, 0x07, 0xc0, 0xff, 0x40, 0x01, 0x03, 0x00, 0x00, 0x00, 0x02, 0x04, 0x01, 0x00 };
+                    send_corsair_response(sockfd, usb_req, response, 64, 0);
+                }
+                else
+                {
+                    char response[BSIZE + 1] = { buffer[0], buffer[1], 0 };
+                    send_corsair_response(sockfd, usb_req, response, 64, 0);
+                }
             }
-            /*char return_val[64];
-            memset(return_val,0,64);
-            return_val[0] = 0x0e;
-            return_val[1] = 0x01;
-            send_corsair_req(sockfd, usb_req, return_val, 64, 0);*/
         }
         else//not supported
             send_usb_req(sockfd, usb_req, "", 64, 0);

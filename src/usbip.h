@@ -393,6 +393,8 @@ typedef struct  __attribute__ ((__packed__)) _StandardDeviceRequest
 void send_usb_req(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsigned int size, unsigned int status);
 void send_corsair_req(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsigned int size, unsigned int status);
 void send_corsair_response(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsigned int size, unsigned int status);
+void send_ctrl_response(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsigned int size, unsigned int status);
+
 void usbip_run (const USB_DEVICE_DESCRIPTOR* dev_dsc);
 
 //implemented by user

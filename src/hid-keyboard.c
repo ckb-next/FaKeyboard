@@ -242,7 +242,7 @@ void handle_unknown_control(int sockfd, StandardDeviceRequest* control_req, USBI
                 printf ("receive error : %s \n", strerror (errno));
                 exit(-1);
             };
-            send_usb_req(sockfd, usb_req, "", 0, 0);
+            send_ctrl_response(sockfd, usb_req, "", control_req->wLength, 0);
         }
     }
 };

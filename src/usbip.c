@@ -25,6 +25,7 @@
 
 //system headers dependent
 
+#define USBIP_VERSION 273
 
 #include"usbip.h"
 
@@ -63,7 +64,7 @@ void handle_device_list(const USB_DEVICE_DESCRIPTOR* dev_dsc, OP_REP_DEVLIST* li
 {
     CONFIG_GEN* conf = (CONFIG_GEN*)configuration;
     int i;
-    list->header.version = htons(273);
+    list->header.version = htons(USBIP_VERSION);
     list->header.command = htons(5);
     list->header.status = 0;
     list->header.nExportedDevice = htonl(1);
@@ -97,7 +98,7 @@ void handle_attach(const USB_DEVICE_DESCRIPTOR* dev_dsc, OP_REP_IMPORT* rep)
 {
     CONFIG_GEN* conf = (CONFIG_GEN*)configuration;
 
-    rep->version = htons(273);
+    rep->version = htons(USBIP_VERSION);
     rep->command = htons(3);
     rep->status = 0;
     memset(rep->usbPath, 0, 256);
@@ -208,6 +209,33 @@ void send_usb_req(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsigned in
             exit(-1);
         };
     }
+}
+
+void send_ctrl_response(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsigned int size, unsigned int status)
+{
+    usb_req->command = 0x3;
+    usb_req->status = status;
+    usb_req->actual_length = size;
+    usb_req->start_frame = 0x0;
+    usb_req->number_of_packets = 0x0;
+
+    usb_req->setup = 0x0;
+    usb_req->devid = 0x0;
+    usb_req->direction = 0x0;
+    usb_req->ep = 0x0;
+
+
+
+    pack((int*)usb_req, sizeof(USBIP_RET_SUBMIT));
+
+    print_recv((char*)usb_req, sizeof(USBIP_RET_SUBMIT), "SendHeader");
+    print_recv(data, size, "SendData");
+
+    if (send (sockfd, (char*)usb_req, sizeof(USBIP_RET_SUBMIT), 0) != sizeof(USBIP_RET_SUBMIT))
+    {
+        printf ("send error : %s \n", strerror (errno));
+        exit(-1);
+    };
 }
 
 void send_corsair_response(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsigned int size, unsigned int status)

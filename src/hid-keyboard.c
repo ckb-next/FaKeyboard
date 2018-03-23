@@ -38,13 +38,13 @@ const USB_DEVICE_DESCRIPTOR dev_dsc =
     0x00,                   // Class Code
     0x00,                   // Subclass code
     0x00,                   // Protocol code
-    0x08,                   // Max packet size for EP0, see usb_config.h
+    0x40,                   // Max packet size for EP0, see usb_config.h
     0x1b1c,                 // Vendor ID
     0x1b15,                 // Product ID: Mouse in a circle fw demo
     0x0205,                 // Device release number in BCD format
-    0x00,                   // Manufacturer string index
-    0x00,                   // Product string index
-    0x00,                   // Device serial number string index
+    0x01,                   // Manufacturer string index
+    0x02,                   // Product string index
+    0x03,                   // Device serial number string index
     0x01                    // Number of possible configurations
 };
 
@@ -58,7 +58,7 @@ const CONFIG_HID  configuration_hid = {{
         1,                      // Index value of this configuration
         0,                      // Configuration string index
         0xa0,
-        50,                     // Max power consumption (2X mA)
+        250,                    // Max power consumption (2X mA)
     }, {
         /* Interface Descriptor */
         0x09,//sizeof(USB_INTF_DSC),   // Size of this descriptor in bytes
@@ -74,7 +74,7 @@ const CONFIG_HID  configuration_hid = {{
         /* HID Class-Specific Descriptor */
         0x09,               // Size of this descriptor in bytes RRoj hack
         0x21,                // HID descriptor type
-        0x0001,                 // HID Spec Release Number in BCD format (1.11)
+        0x0111,                 // HID Spec Release Number in BCD format (1.11)
         0x00,                   // Country Code (0x00 for Not supported)
         0x01,        // Number of class descriptors, see usbcfg.h
         0x22,                // Report descriptor type
@@ -104,7 +104,7 @@ const CONFIG_HID  configuration_hid = {{
         /* HID Class-Specific Descriptor */
         0x09,               // Size of this descriptor in bytes RRoj hack
         0x21,                // HID descriptor type
-        0x0001,                 // HID Spec Release Number in BCD format (1.11)
+        0x0111,                 // HID Spec Release Number in BCD format (1.11)
         0x00,                   // Country Code (0x00 for Not supported)
         0x01,         // Number of class descriptors, see usbcfg.h
         0x22,                // Report descriptor type
@@ -127,14 +127,14 @@ const CONFIG_HID  configuration_hid = {{
         0,                      // Alternate Setting Number
         1,                      // Number of endpoints in this intf
         0x03,                   // Class code
-        0x01,                   // Subclass code
-        0x01,                   // Protocol code
+        0x00,                   // Subclass code
+        0x00,                   // Protocol code
         0,                      // Interface string index
     }, {
         /* HID Class-Specific Descriptor */
         0x09,               // Size of this descriptor in bytes RRoj hack
         0x21,                // HID descriptor type
-        0x0001,                 // HID Spec Release Number in BCD format (1.11)
+        0x0111,                 // HID Spec Release Number in BCD format (1.11)
         0x00,                   // Country Code (0x00 for Not supported)
         0x01,         // Number of class descriptors, see usbcfg.h
         0x22,                // Report descriptor type
@@ -153,7 +153,117 @@ const CONFIG_HID  configuration_hid = {{
 
 const char* configuration = (const char*)& configuration_hid;
 const USB_INTERFACE_DESCRIPTOR* interfaces[] = { &configuration_hid.dev_int0, &configuration_hid.dev_int1, &configuration_hid.dev_int2 };
-const unsigned char* strings[] = {};
+
+const unsigned char string_0[] =
+{
+    0x04,
+    USB_DESCRIPTOR_STRING,
+    0x09,
+    0x04
+};
+
+const unsigned char string_1[] =  // Manufacturer
+{
+    0x10,
+    USB_DESCRIPTOR_STRING,
+    'C', 0x00,
+    'o', 0x00,
+    'r', 0x00,
+    's', 0x00,
+    'a', 0x00,
+    'i', 0x00,
+    'r', 0x00,
+};
+
+const unsigned char string_2[] =  // Product
+{
+    0x42,
+    USB_DESCRIPTOR_STRING, // bLength, bDscType
+    'C', 0x00,
+    'o', 0x00,
+    'r', 0x00,
+    's', 0x00,
+    'a', 0x00,
+    'i', 0x00,
+    'r', 0x00,
+    ' ', 0x00,
+    'S', 0x00,
+    't', 0x00,
+    'r', 0x00,
+    'a', 0x00,
+    'f', 0x00,
+    'e', 0x00,
+    ' ', 0x00,
+    'G', 0x00,
+    'a', 0x00,
+    'm', 0x00,
+    'i', 0x00,
+    'n', 0x00,
+    'g', 0x00,
+    ' ', 0x00,
+    'K', 0x00,
+    'e', 0x00,
+    'y', 0x00,
+    'b', 0x00,
+    'o', 0x00,
+    'a', 0x00,
+    'r', 0x00,
+    'd', 0x00,
+    ' ', 0x00,
+    ' ', 0x00,
+};
+
+const unsigned char string_3[] =  // Serial
+{
+    0x5a,
+    USB_DESCRIPTOR_STRING,
+    '0', 0x00,
+    '1', 0x00,
+    '2', 0x00,
+    '3', 0x00,
+    '4', 0x00,
+    '5', 0x00,
+    '6', 0x00,
+    '7', 0x00,
+    '8', 0x00,
+    '9', 0x00,
+    '0', 0x00,
+    '1', 0x00,
+    '2', 0x00,
+    '3', 0x00,
+    '4', 0x00,
+    '5', 0x00,
+    '6', 0x00,
+    '7', 0x00,
+    '8', 0x00,
+    '9', 0x00,
+    '0', 0x00,
+    '1', 0x00,
+    '2', 0x00,
+    '3', 0x00,
+    '4', 0x00,
+    '5', 0x00,
+    '6', 0x00,
+    '7', 0x00,
+    '8', 0x00,
+    '9', 0x00,
+    '0', 0x00,
+    '1', 0x00,
+    0x00, 0x00,
+    0x00, 0x00,
+    0x00, 0x00,
+    0x00, 0x00,
+    0x00, 0x00,
+    0x00, 0x00,
+    0x00, 0x00,
+    0x00, 0x00,
+    0x00, 0x00,
+    0x00, 0x00,
+    0x00, 0x00,
+    0x00, 0x00,
+};
+
+const unsigned char* strings[] = {string_0, string_1, string_2, string_3};
 const USB_DEVICE_QUALIFIER_DESCRIPTOR  dev_qua = {};
 
 
@@ -177,6 +287,13 @@ const byte corsair_report[112] =
     0x95, 0x3F, 0x75, 0x08, 0x09, 0x02, 0x81, 0x02, 0xC0, 0x06, 0xC2, 0xFF, 0x09, 0x03, 0xA1, 0x01,
     0x85, 0x0E, 0x15, 0x00, 0x26, 0xFF, 0x00, 0x95, 0x3F, 0x75, 0x08, 0x09, 0x03, 0x81, 0x02, 0xC0
 };
+
+const byte corsair_report_if2[25] =
+{
+    0x06, 0xc2, 0xff, 0x09, 0x04, 0xa1, 0x01, 0x15, 0x00, 0x26, 0xff, 0x00, 0x95, 0x40, 0x75, 0x08,
+    0x09, 0x02, 0xb1, 0x02, 0x09, 0x04, 0x91, 0x02, 0xc0
+};
+
 
 #define BSIZE 64
 char buffer[BSIZE + 1];
@@ -236,6 +353,8 @@ void handle_unknown_control(int sockfd, StandardDeviceRequest* control_req, USBI
                     send_usb_req(sockfd, usb_req, (char*) keyboard_report, 0x43, 0);
                 else if(control_req->wIndex0 == 0x01)
                     send_usb_req(sockfd, usb_req, (char*) corsair_report, 112, 0);
+                else if(control_req->wIndex0 == 0x02)
+                    send_usb_req(sockfd, usb_req, (char*) corsair_report_if2, 25, 0);
                 else
                     puts("Unknown interface");
             }

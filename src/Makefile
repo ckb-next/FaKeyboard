@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS= -Wall -DLINUX 
+CFLAGS= -Wall -DLINUX -g
 #PROGS= hid-mouse hid-keyboard cdc-acm
 PROGS= hid-keyboard
 

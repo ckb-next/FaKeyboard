@@ -108,9 +108,9 @@ void handle_attach(const USB_DEVICE_DESCRIPTOR* dev_dsc, OP_REP_IMPORT* rep)
     rep->busnum = htonl(1);
     rep->devnum = htonl(2);
     rep->speed = htonl(2);
-    rep->idVendor = dev_dsc->idVendor;
-    rep->idProduct = dev_dsc->idProduct;
-    rep->bcdDevice = dev_dsc->bcdDevice;
+    rep->idVendor = htons(dev_dsc->idVendor);
+    rep->idProduct = htons(dev_dsc->idProduct);
+    rep->bcdDevice = htons(dev_dsc->bcdDevice);
     rep->bDeviceClass = dev_dsc->bDeviceClass;
     rep->bDeviceSubClass = dev_dsc->bDeviceSubClass;
     rep->bDeviceProtocol = dev_dsc->bDeviceProtocol;

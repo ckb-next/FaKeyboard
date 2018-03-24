@@ -29,12 +29,14 @@
 #include <unistd.h>
 #include "usbip.h"
 
+int windows_client = 0;
+
 /* Device Descriptor */
 const USB_DEVICE_DESCRIPTOR dev_dsc =
 {
     0x12,                   // Size of this descriptor in bytes
     0x01,                   // DEVICE descriptor type
-    0x0110,                 // USB Spec Release Number in BCD format
+    0x0200,                 // USB Spec Release Number in BCD format
     0x00,                   // Class Code
     0x00,                   // Subclass code
     0x00,                   // Protocol code
@@ -263,7 +265,17 @@ const unsigned char string_3[] =  // Serial
     0x00, 0x00,
 };
 
-const unsigned char* strings[] = {string_0, string_1, string_2, string_3};
+// No idea what this is
+const unsigned char string_4[] =
+{
+    0x08,
+    USB_DESCRIPTOR_STRING,
+    'P', 0x00,
+    '0', 0x00,
+    '4', 0x00,
+};
+
+const unsigned char* strings[] = {string_0, string_1, string_2, string_3, string_4};
 const USB_DEVICE_QUALIFIER_DESCRIPTOR  dev_qua = {};
 
 
@@ -385,7 +397,7 @@ void handle_unknown_control(int sockfd, StandardDeviceRequest* control_req, USBI
     }
 };
 
-int main()
+int main(int argc, char* argv[])
 {
     printf("hid keyboard started....\n");
     usbip_run(&dev_dsc);

@@ -239,7 +239,7 @@ void send_ctrl_response(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsig
     };
 }
 
-void send_corsair_response(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsigned int size, unsigned int status)
+void send_corsair_response(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsigned int size, unsigned int status, int ep)
 {
     usb_req->command = 0x3;
     usb_req->status = status;
@@ -250,7 +250,7 @@ void send_corsair_response(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, un
     usb_req->setup = 0x0;
     usb_req->devid = 0x0;
     usb_req->direction = 0x1;
-    usb_req->ep = 0x82;
+    usb_req->ep = ep;
 
     pack((int*)usb_req, sizeof(USBIP_RET_SUBMIT));
 #ifdef _DEBUG

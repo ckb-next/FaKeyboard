@@ -29,7 +29,7 @@
 
 #include"usbip.h"
 
-#define _DEBUG
+//#define _DEBUG
 
 #ifdef _DEBUG
 void print_recv(char* buff, int size, const char* desc)
@@ -164,10 +164,11 @@ void send_corsair_req(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsigne
 
 
     pack((int*)usb_req, sizeof(USBIP_RET_SUBMIT));
+#ifdef _DEBUG
 
     print_recv((char*)usb_req, sizeof(USBIP_RET_SUBMIT), "SendHeader");
     print_recv(data, size, "SendData");
-
+#endif
     if (send (sockfd, (char*)usb_req, sizeof(USBIP_RET_SUBMIT), 0) != sizeof(USBIP_RET_SUBMIT))
     {
         printf ("send error : %s \n", strerror (errno));
@@ -191,10 +192,10 @@ void send_usb_req(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsigned in
 
 
     pack((int*)usb_req, sizeof(USBIP_RET_SUBMIT));
-
+#ifdef _DEBUG
     print_recv((char*)usb_req, sizeof(USBIP_RET_SUBMIT), "SendHeader");
     print_recv(data, size, "SendData");
-
+#endif
     if (send (sockfd, (char*)usb_req, sizeof(USBIP_RET_SUBMIT), 0) != sizeof(USBIP_RET_SUBMIT))
     {
         printf ("send error : %s \n", strerror (errno));
@@ -227,10 +228,10 @@ void send_ctrl_response(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsig
 
 
     pack((int*)usb_req, sizeof(USBIP_RET_SUBMIT));
-
+#ifdef _DEBUG
     print_recv((char*)usb_req, sizeof(USBIP_RET_SUBMIT), "SendHeader");
     print_recv(data, size, "SendData");
-
+#endif
     if (send (sockfd, (char*)usb_req, sizeof(USBIP_RET_SUBMIT), 0) != sizeof(USBIP_RET_SUBMIT))
     {
         printf ("send error : %s \n", strerror (errno));
@@ -252,10 +253,10 @@ void send_corsair_response(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, un
     usb_req->ep = 0x82;
 
     pack((int*)usb_req, sizeof(USBIP_RET_SUBMIT));
-
+#ifdef _DEBUG
     print_recv((char*)usb_req, sizeof(USBIP_RET_SUBMIT), "SendHeader");
     print_recv(data, size, "SendData");
-
+#endif
     if (send (sockfd, (char*)usb_req, sizeof(USBIP_RET_SUBMIT), 0) != sizeof(USBIP_RET_SUBMIT))
     {
         printf ("send error : %s \n", strerror (errno));
@@ -527,8 +528,10 @@ usbip_run (const USB_DEVICE_DESCRIPTOR* dev_dsc)                                
             }
             else
             {
+#ifdef _DEBUG
                 printf("------------------------------------------------\n");
                 printf("handles requests\n");
+#endif
                 USBIP_CMD_SUBMIT cmd;
                 USBIP_RET_SUBMIT usb_req;
                 if ((nb = recv (sockfd, (char*)&cmd, sizeof(USBIP_CMD_SUBMIT), 0)) != sizeof(USBIP_CMD_SUBMIT))
@@ -540,6 +543,7 @@ usbip_run (const USB_DEVICE_DESCRIPTOR* dev_dsc)                                
                 print_recv((char*)&cmd, sizeof(USBIP_CMD_SUBMIT), "USBIP_CMD_SUBMIT");
 #endif
                 unpack((int*)&cmd, sizeof(USBIP_CMD_SUBMIT));
+#ifdef _DEBUG
                 printf("usbip cmd %u\n", cmd.command);
                 printf("usbip seqnum %u\n", cmd.seqnum);
                 printf("usbip devid %u\n", cmd.devid);
@@ -554,6 +558,7 @@ usbip_run (const USB_DEVICE_DESCRIPTOR* dev_dsc)                                
                 printf("usbip setup %I64u\n", cmd.setup);
 #endif
                 printf("usbip buffer length  %u\n", cmd.transfer_buffer_length);
+#endif
                 usb_req.command = 0;
                 usb_req.seqnum = cmd.seqnum;
                 usb_req.devid = cmd.devid;

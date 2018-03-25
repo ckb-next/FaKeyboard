@@ -1,13 +1,13 @@
 CC=gcc
 CFLAGS= -Wall -DLINUX -g
 #PROGS= hid-mouse hid-keyboard cdc-acm
-PROGS= hid-keyboard
+PROGS= hid-keyboard hid-mouse
 
 all:	${PROGS}
 
-#hid-mouse:	usbip.c hid-mouse.c 
-#		${CC} ${CFLAGS} usbip.c -c 
-#		${CC} ${CFLAGS} usbip.o hid-mouse.c -o hid-mouse 
+hid-mouse:	usbip.c hid-mouse.c
+		${CC} ${CFLAGS} usbip.c -c
+		${CC} ${CFLAGS} usbip.o hid-mouse.c -o hid-mouse
 
 hid-keyboard:	usbip.c hid-keyboard.c 
 		${CC} ${CFLAGS} usbip.c -c 

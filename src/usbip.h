@@ -182,6 +182,22 @@ typedef struct __attribute__ ((__packed__)) _CONFIG_HID_V3
 
 } CONFIG_HID_V3;
 
+//Configuration
+typedef struct __attribute__ ((__packed__)) _CONFIG_HID_MOUSEPAD
+{
+    USB_CONFIGURATION_DESCRIPTOR dev_conf;
+
+    USB_INTERFACE_DESCRIPTOR dev_int0;
+    USB_HID_DESCRIPTOR dev_hid0;
+    USB_ENDPOINT_DESCRIPTOR dev_ep0;
+    USB_ENDPOINT_DESCRIPTOR dev_ep1;
+
+    USB_INTERFACE_DESCRIPTOR dev_int1;
+    USB_HID_DESCRIPTOR dev_hid1;
+    USB_ENDPOINT_DESCRIPTOR dev_ep2;
+
+} CONFIG_HID_MOUSEPAD;
+
 //CDC
 /* Functional Descriptor Structure - See CDC Specification 1.1 for details */
 

@@ -361,7 +361,7 @@ void handle_unknown_control(int sockfd, StandardDeviceRequest* control_req, USBI
         if(control_req->bRequest == 0x09)  // set report
         {
             printf("set report\n");
-            char data[20];
+            char data[64];
             if ((recv (sockfd, data , control_req->wLength, 0)) != control_req->wLength)
             {
                 printf ("receive error : %s \n", strerror (errno));

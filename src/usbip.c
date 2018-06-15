@@ -27,7 +27,7 @@
 
 #define USBIP_VERSION 273
 
-#include"usbip.h"
+#include "usbip.h"
 
 //#define _DEBUG
 
@@ -314,7 +314,7 @@ int handle_get_descriptor(int sockfd, StandardDeviceRequest* control_req, USBIP_
     }
     if(control_req->wValue1 == 0x2) // configuration
     {
-        printf("Configuration\n");
+        printf("Configuration len:%i\n", control_req->wLength);
         handled = 1;
         send_usb_req(sockfd, usb_req, (char*) configuration, control_req->wLength , 0);
     }
@@ -323,6 +323,8 @@ int handle_get_descriptor(int sockfd, StandardDeviceRequest* control_req, USBIP_
         char str[255];
         int i;
         memset(str, 0, 255);
+        if(control_req->wValue0 == 41) // What?!
+            control_req->wValue0 = 4;
         for(i = 0; i < (*strings[control_req->wValue0] / 2) - 1; i++)
             str[i] = strings[control_req->wValue0][i * 2 + 2];
         printf("String (%s)\n", str);

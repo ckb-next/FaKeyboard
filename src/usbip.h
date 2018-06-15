@@ -104,6 +104,84 @@ typedef struct __attribute__ ((__packed__)) _USB_INTERFACE_DESCRIPTOR
     byte iInterface;            // Index of String Descriptor describing the interface.
 } USB_INTERFACE_DESCRIPTOR;
 
+typedef struct __attribute__ ((__packed__)) _AUDIOCONTROL_INTERFACE_DESCRIPTOR_HEADER
+{
+    byte bLength;
+    byte bDescriptorType;
+    byte bDescriptorSubType;
+    word bcdADC;
+    word wTotalLength;
+    byte bInCollection;
+    byte baInterfaceNr0;
+    byte baInterfaceNr1;
+} AUDIOCONTROL_INTERFACE_DESCRIPTOR_HEADER;
+
+typedef struct __attribute__ ((__packed__)) _AUDIOCONTROL_INTERFACE_DESCRIPTOR_INPUT_TERMINAL
+{
+    byte bLength;
+    byte bDescriptorType;
+    byte bDescriptorSubType;
+    byte bTerminalID;
+    word wTerminalType;
+    byte bAssocTerminal;
+    byte NrChannels;
+    word wChannelconfig;
+    byte iChannelNames;
+    byte iTerminal;
+} AUDIOCONTROL_INTERFACE_DESCRIPTOR_INPUT_TERMINAL;
+
+typedef struct __attribute__ ((__packed__)) _AUDIOCONTROL_INTERFACE_DESCRIPTOR_FEATURE_UNIT
+{
+    byte bLength;
+    byte bDescriptorType;
+    byte bDescriptorSubType;
+    byte bUnitID;
+    byte bSourceID;
+    byte bControlSize;
+    byte bmaControls0;
+    byte bmaControls1;
+    byte bmaControls2;
+    byte iFeature;
+} AUDIOCONTROL_INTERFACE_DESCRIPTOR_FEATURE_UNIT;
+
+typedef struct __attribute__ ((__packed__)) _AUDIOCONTROL_INTERFACE_DESCRIPTOR_SELECTOR_UNIT
+{
+    byte bLength;
+    byte bDescriptorType;
+    byte bDescriptorSubType;
+    byte bUnitID;
+    byte bNrInPins;
+    byte baSource0;
+    byte iSelector;
+} AUDIOCONTROL_INTERFACE_DESCRIPTOR_SELECTOR_UNIT;
+
+typedef struct __attribute__ ((__packed__)) _AUDIOCONTROL_INTERFACE_DESCRIPTOR_OUTPUT_TERMINAL
+{
+    byte bLength;
+    byte bDescriptorType;
+    byte bDescriptorSubType;
+    byte bTerminalID;
+    word wTerminalType;
+    byte bAssocTerminal;
+    byte bSourceID;
+    byte iTerminal;
+} AUDIOCONTROL_INTERFACE_DESCRIPTOR_OUTPUT_TERMINAL;
+
+typedef struct __attribute__ ((__packed__)) _AUDIOCONTROL_INTERFACE_DESCRIPTOR_MIXER_UNIT
+{
+    byte bLength;
+    byte bDescriptorType;
+    byte bDescriptorSubType;
+    byte bUnitID;
+    byte bNrInPins;
+    byte baSourceID0;
+    byte baSourceID1;
+    byte bNrChannels;
+    word wChannelConfig;
+    byte iChannelNames;
+    byte bmControls;
+    byte iMixer;
+} AUDIOCONTROL_INTERFACE_DESCRIPTOR_MIXER_UNIT;
 
 typedef struct __attribute__ ((__packed__)) _USB_ENDPOINT_DESCRIPTOR
 {
@@ -166,6 +244,24 @@ typedef struct __attribute__ ((__packed__)) _CONFIG_HID
 
 } CONFIG_HID;
 
+typedef struct __attribute__ ((__packed__)) _CONFIG_HID_NODE
+{
+    USB_CONFIGURATION_DESCRIPTOR dev_conf;
+
+    USB_INTERFACE_DESCRIPTOR dev_int0;
+    USB_HID_DESCRIPTOR dev_hid0;
+    USB_ENDPOINT_DESCRIPTOR dev_ep0;
+
+    USB_INTERFACE_DESCRIPTOR dev_int1;
+    USB_HID_DESCRIPTOR dev_hid1;
+    USB_ENDPOINT_DESCRIPTOR dev_ep1;
+
+    USB_INTERFACE_DESCRIPTOR dev_int2;
+    USB_HID_DESCRIPTOR dev_hid2;
+    USB_ENDPOINT_DESCRIPTOR dev_ep2;
+
+} CONFIG_HID_NODE;
+
 //Configuration
 typedef struct __attribute__ ((__packed__)) _CONFIG_HID_V3
 {
@@ -197,6 +293,48 @@ typedef struct __attribute__ ((__packed__)) _CONFIG_HID_MOUSEPAD
     USB_ENDPOINT_DESCRIPTOR dev_ep2;
 
 } CONFIG_HID_MOUSEPAD;
+
+typedef struct __attribute__ ((__packed__)) _CONFIG_HID_HEADSET
+{
+    USB_CONFIGURATION_DESCRIPTOR dev_conf;
+
+    USB_INTERFACE_DESCRIPTOR dev_int0;
+    AUDIOCONTROL_INTERFACE_DESCRIPTOR_HEADER dev_auctrl0;
+    AUDIOCONTROL_INTERFACE_DESCRIPTOR_INPUT_TERMINAL dev_auctrl1;
+    AUDIOCONTROL_INTERFACE_DESCRIPTOR_FEATURE_UNIT dev_auctrl2;
+    AUDIOCONTROL_INTERFACE_DESCRIPTOR_INPUT_TERMINAL dev_auctrl3;
+    AUDIOCONTROL_INTERFACE_DESCRIPTOR_FEATURE_UNIT dev_auctrl4;
+    AUDIOCONTROL_INTERFACE_DESCRIPTOR_SELECTOR_UNIT dev_auctrl5;
+    AUDIOCONTROL_INTERFACE_DESCRIPTOR_OUTPUT_TERMINAL dev_auctrl6;
+    AUDIOCONTROL_INTERFACE_DESCRIPTOR_INPUT_TERMINAL dev_auctrl7;
+    AUDIOCONTROL_INTERFACE_DESCRIPTOR_FEATURE_UNIT dev_auctrl8;
+    AUDIOCONTROL_INTERFACE_DESCRIPTOR_OUTPUT_TERMINAL dev_auctrl9;
+    AUDIOCONTROL_INTERFACE_DESCRIPTOR_MIXER_UNIT dev_auctrl10;
+
+    USB_INTERFACE_DESCRIPTOR dev_int1;
+    //USB_INTERFACE_DESCRIPTOR dev_int1_1; //Alt
+
+    USB_INTERFACE_DESCRIPTOR dev_int2;
+    //USB_INTERFACE_DESCRIPTOR dev_int2_1; //Alt
+    //USB_INTERFACE_DESCRIPTOR dev_int2_2; //Alt
+
+    USB_INTERFACE_DESCRIPTOR dev_int3;
+    USB_HID_DESCRIPTOR dev_hid0;
+    USB_ENDPOINT_DESCRIPTOR dev_ep0;
+
+} CONFIG_HID_HEADSET;
+
+//Configuration
+typedef struct __attribute__ ((__packed__)) _CONFIG_HID_STAND
+{
+    USB_CONFIGURATION_DESCRIPTOR dev_conf;
+
+    USB_INTERFACE_DESCRIPTOR dev_int0;
+    USB_HID_DESCRIPTOR dev_hid0;
+    USB_ENDPOINT_DESCRIPTOR dev_ep0;
+    USB_ENDPOINT_DESCRIPTOR dev_ep1;
+
+} CONFIG_HID_STAND;
 
 //CDC
 /* Functional Descriptor Structure - See CDC Specification 1.1 for details */

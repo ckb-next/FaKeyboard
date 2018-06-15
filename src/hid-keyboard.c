@@ -325,7 +325,8 @@ void handle_data(int sockfd, USBIP_RET_SUBMIT* usb_req, int bl)
             for(int i = 0; i < bl; i++)
                 printf("%02x ", (unsigned char)buffer[i]);
             puts("");
-            send_corsair_req(sockfd, usb_req, "", 0x40, 0);
+            char blankbuffer[64] = {0};
+            send_corsair_req(sockfd, usb_req, blankbuffer, 0x40, 0);
             if(buffer[0] == 0x0e)
             {
                 usb_req->seqnum = seqnum82;

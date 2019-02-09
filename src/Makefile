@@ -1,6 +1,6 @@
-CC=gcc
+CC=cc
 CFLAGS= -Wall -Wextra -Wcast-align -Winit-self -Wno-unused-parameter -DLINUX -g -fsanitize=address
-PROGS= hid-keyboard hid-keyboard-wireless hid-keyboard-wireless-wired hid-mouse hid-mousepad hid-mouse-wireless hid-mouse-wireless-wired hid-keyboard-special hid-headset hid-stand hid-node
+PROGS= hid-keyboard hid-keyboard-wireless hid-keyboard-wireless-wired hid-mouse hid-mousepad hid-mouse-wireless hid-mouse-wireless-wired hid-keyboard-special hid-headset hid-stand hid-node hid-95-legacy hid-y729
 
 all:	${PROGS}
 
@@ -47,6 +47,22 @@ hid-stand:	usbip.c hid-stand.c
 hid-node:	usbip.c hid-node.c
 		${CC} ${CFLAGS} usbip.c -c
 		${CC} ${CFLAGS} usbip.o hid-node.c -o hid-node
+
+hid-headset-wireless:	usbip.c hid-node.c
+		${CC} ${CFLAGS} usbip.c -c
+		${CC} ${CFLAGS} usbip.o hid-headset-wireless.c -o hid-headset-wireless
+
+hid-95-legacy:	usbip.c hid-95-legacy.c
+		${CC} ${CFLAGS} usbip.c -c
+		${CC} ${CFLAGS} usbip.o hid-95-legacy.c -o hid-95-legacy
+
+hid-y729:	usbip.c hid-y729.c
+		${CC} ${CFLAGS} usbip.c -c
+		${CC} ${CFLAGS} usbip.o hid-y729.c -o hid-y729
+
+hid-bragi:	usbip.c hid-bragi.c
+		${CC} ${CFLAGS} usbip.c -c
+		${CC} ${CFLAGS} usbip.o hid-bragi.c -o hid-bragi
 
 clean:
 		rm -f ${PROGS} core core.* *.o temp.* *.out typescript*

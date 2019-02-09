@@ -40,7 +40,7 @@ const USB_DEVICE_DESCRIPTOR dev_dsc =
     0x00,                   // Protocol code
     0x40,                   // Max packet size for EP0, see usb_config.h
     0x1b1c,                 // Vendor ID
-    0x1b64,                 // Product ID: Mouse in a circle fw demo
+    0x1b5e,                 // Product ID: Mouse in a circle fw demo
     0x0033,                 // Device release number in BCD format
     0x01,                   // Manufacturer string index
     0x02,                   // Product string index
@@ -285,6 +285,8 @@ int  bsize = 0;
 int  seqnum81 = 0;
 int  seqnum82 = 0;
 int  seqnum03 = 0;
+//int  sendunknownpackets = 0;
+int  unknownpacketcount = 0;
 
 void handle_data(int sockfd, USBIP_RET_SUBMIT* usb_req, int bl)
 {
@@ -320,6 +322,7 @@ void handle_data(int sockfd, USBIP_RET_SUBMIT* usb_req, int bl)
                 {
                     char response[BSIZE + 1] = {   0x0e, 0x51, 0x00, 0x00, 0x01, 0x00 };
                     send_corsair_response(sockfd, usb_req, response, 64, 0, 0x81);
+                    unknownpacketcount = 5;
                 }
                 else if((unsigned char)buffer[1] == 0x17)
                 {
@@ -347,6 +350,37 @@ void handle_data(int sockfd, USBIP_RET_SUBMIT* usb_req, int bl)
     }
     else if(usb_req->ep == 0x01)
     {
+        if(unknownpacketcount)
+        {
+            if(unknownpacketcount == 5)
+            {
+                char response[BSIZE + 1] = { 0x04, 0 };
+                response[64] = 0x80;
+                send_corsair_response(sockfd, usb_req, response, 64, 0, 0x81);
+            }
+            else if(unknownpacketcount == 4)
+            {
+                char response[0x16] = { 0x05, 0 };
+                send_corsair_response(sockfd, usb_req, response, 0x15, 0, 0x81);
+            }
+            else if(unknownpacketcount == 3)
+            {
+                char response[BSIZE + 1] = { 0x03, 0 };
+                send_corsair_response(sockfd, usb_req, response, 64, 0, 0x81);
+            }
+            else if(unknownpacketcount == 2)
+            {
+                char response[0x06] = { 0x02, 0 };
+                send_corsair_response(sockfd, usb_req, response, 0x05, 0, 0x81);
+            }
+            else if(unknownpacketcount == 1)
+            {
+                char response[0x0b] = { 0x01, 0 };
+                send_corsair_response(sockfd, usb_req, response, 0x0a, 0, 0x81);
+            }
+            unknownpacketcount--;
+            return;
+        }
         seqnum81 = usb_req->seqnum;
     }
     //else if(usb_req->ep == 0x02)

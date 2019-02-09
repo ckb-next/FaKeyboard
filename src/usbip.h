@@ -336,6 +336,25 @@ typedef struct __attribute__ ((__packed__)) _CONFIG_HID_STAND
 
 } CONFIG_HID_STAND;
 
+typedef struct __attribute__ ((__packed__)) _CONFIG_HID_BRAGI
+{
+    USB_CONFIGURATION_DESCRIPTOR dev_conf;
+
+    USB_INTERFACE_DESCRIPTOR dev_int0;
+    USB_HID_DESCRIPTOR dev_hid0;
+    USB_ENDPOINT_DESCRIPTOR dev_ep2;
+
+    USB_INTERFACE_DESCRIPTOR dev_int1;
+    USB_HID_DESCRIPTOR dev_hid1;
+    USB_ENDPOINT_DESCRIPTOR dev_ep4_in;
+    USB_ENDPOINT_DESCRIPTOR dev_ep4_out;
+
+    USB_INTERFACE_DESCRIPTOR dev_int2;
+    USB_HID_DESCRIPTOR dev_hid2;
+    USB_ENDPOINT_DESCRIPTOR dev_ep3;
+
+} CONFIG_HID_BRAGI;
+
 //CDC
 /* Functional Descriptor Structure - See CDC Specification 1.1 for details */
 
@@ -565,7 +584,7 @@ void send_corsair_req(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsigne
 void send_corsair_req_in(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsigned int size, unsigned int status);
 void send_corsair_response(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsigned int size, unsigned int status, int ep);
 void send_ctrl_response(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsigned int size, unsigned int status);
-
+void send_ctrl_response_response(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsigned int size, unsigned int status);
 void usbip_run (const USB_DEVICE_DESCRIPTOR* dev_dsc);
 
 //implemented by user

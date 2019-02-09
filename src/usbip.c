@@ -31,7 +31,7 @@
 
 //#define _DEBUG
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 void print_recv(char* buff, int size, const char* desc)
 {
     int i, j;
@@ -53,7 +53,7 @@ void print_recv(char* buff, int size, const char* desc)
 
     printf("\n-------------------------\n");
 }
-#endif
+//#endif
 
 #ifndef LINUX
 WORD wVersionRequested = 2;
@@ -218,6 +218,36 @@ void send_usb_req(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsigned in
     usb_req->direction = 0x0;
     usb_req->ep = 0x0;
 
+    pack((int*)usb_req, sizeof(USBIP_RET_SUBMIT));
+    char* merged = malloc(sizeof(USBIP_RET_SUBMIT) + size);
+    memcpy(merged, usb_req, sizeof(USBIP_RET_SUBMIT));
+    memcpy(merged + sizeof(USBIP_RET_SUBMIT), data, size);
+#ifdef _DEBUG
+    print_recv((char*)usb_req, sizeof(USBIP_RET_SUBMIT), "SendString");
+#endif
+
+    if(send(sockfd, merged, sizeof(USBIP_RET_SUBMIT) + size, 0) != sizeof(USBIP_RET_SUBMIT) + size)
+    {
+        printf("send error : %s \n", strerror (errno));
+        free(merged);
+        exit(-1);
+    }
+    free(merged);
+}
+
+void send_ctrl_response_response(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsigned int size, unsigned int status)
+{
+    usb_req->command = 0x3;
+    usb_req->status = status;
+    usb_req->actual_length = size;
+    usb_req->start_frame = 0x0;
+    usb_req->number_of_packets = 0x0;
+
+    usb_req->setup = 0x0;
+    usb_req->devid = 0x0;
+    usb_req->direction = 0x1;
+    usb_req->ep = 0x0;
+
 
 
     pack((int*)usb_req, sizeof(USBIP_RET_SUBMIT));
@@ -239,6 +269,7 @@ void send_usb_req(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsigned in
             exit(-1);
         };
     }
+
 }
 
 void send_ctrl_response(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsigned int size, unsigned int status)
@@ -373,11 +404,11 @@ void handle_usb_control(int sockfd, USBIP_RET_SUBMIT* usb_req)
     control_req.wIndex0 =        (usb_req->setup & 0x00000000FF000000) >> 24;
     control_req.wIndex1 =        (usb_req->setup & 0x0000000000FF0000) >> 16;
     control_req.wLength =   ntohs(usb_req->setup & 0x000000000000FFFF);
-    printf("  UC Request Type %u\n", control_req.bmRequestType);
-    printf("  UC Request %u\n", control_req.bRequest);
-    printf("  UC Value  %u[%u]\n", control_req.wValue1, control_req.wValue0);
-    printf("  UCIndex  %u-%u\n", control_req.wIndex1, control_req.wIndex0);
-    printf("  UC Length %u\n", control_req.wLength);
+    printf("  bmRequestType 0x%x\n", control_req.bmRequestType);
+    printf("  bRequest 0x%x\n", control_req.bRequest);
+    printf("  wValue 1[0]: 0x%x[0x%x]\n", control_req.wValue1, control_req.wValue0);
+    printf("  windex 1-0  0x%x-0x%x\n", control_req.wIndex1, control_req.wIndex0);
+    printf("  wLength %u\n", control_req.wLength);
 
     if(control_req.bmRequestType == 0x80) // Host Request
     {
@@ -418,14 +449,15 @@ void handle_usb_control(int sockfd, USBIP_RET_SUBMIT* usb_req)
 
 void handle_usb_request(int sockfd, USBIP_RET_SUBMIT* ret, int bl)
 {
+    const char* dir = (ret->direction ? "IN (dev -> host)" : "OUT (host -> dev)");
     if(ret->ep == 0)
     {
-        printf("#control requests\n");
+        printf("URB Control %s\n", dir);
         handle_usb_control(sockfd, ret);
     }
     else
     {
-        printf("#data requests\n");
+        printf("URB Interrupt %s\n", dir);
         handle_data(sockfd, ret, bl);
     }
 };

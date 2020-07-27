@@ -352,8 +352,30 @@ typedef struct __attribute__ ((__packed__)) _CONFIG_HID_BRAGI
     USB_INTERFACE_DESCRIPTOR dev_int2;
     USB_HID_DESCRIPTOR dev_hid2;
     USB_ENDPOINT_DESCRIPTOR dev_ep3;
-
+    
+    USB_INTERFACE_DESCRIPTOR dev_int3;
+    USB_HID_DESCRIPTOR dev_hid3;
+    USB_ENDPOINT_DESCRIPTOR dev_ep1;
 } CONFIG_HID_BRAGI;
+
+//Configuration
+typedef struct __attribute__ ((__packed__)) _CONFIG_HID_M45
+{
+    USB_CONFIGURATION_DESCRIPTOR dev_conf;
+
+    USB_INTERFACE_DESCRIPTOR dev_int0;
+    USB_HID_DESCRIPTOR dev_hid0;
+    USB_ENDPOINT_DESCRIPTOR dev_ep0;
+
+    USB_INTERFACE_DESCRIPTOR dev_int1;
+    USB_HID_DESCRIPTOR dev_hid1;
+    USB_ENDPOINT_DESCRIPTOR dev_ep1;
+    
+    USB_INTERFACE_DESCRIPTOR dev_int2;
+    USB_HID_DESCRIPTOR dev_hid2;
+    USB_ENDPOINT_DESCRIPTOR dev_ep2;
+
+} CONFIG_HID_M45;
 
 //CDC
 /* Functional Descriptor Structure - See CDC Specification 1.1 for details */

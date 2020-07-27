@@ -160,7 +160,37 @@ void send_corsair_req(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsigne
     //usb_req->devid=0x0;
     usb_req->direction = 0x00;
     usb_req->direction = 0x00;
+    #warning "FIXME merge all these silly functions and add proper arguments"
     usb_req->ep = 0x82;
+
+
+
+    pack((int*)usb_req, sizeof(USBIP_RET_SUBMIT));
+#ifdef _DEBUG
+
+    print_recv((char*)usb_req, sizeof(USBIP_RET_SUBMIT), "SendHeader");
+    print_recv(data, size, "SendData");
+#endif
+    if (send (sockfd, (char*)usb_req, sizeof(USBIP_RET_SUBMIT), 0) != sizeof(USBIP_RET_SUBMIT))
+    {
+        printf ("send error : %s \n", strerror (errno));
+        exit(-1);
+    };
+}
+
+void send_corsair_bragi_req(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsigned int size, unsigned int status)
+{
+    usb_req->command = 0x3;
+    usb_req->status = status;
+    usb_req->actual_length = size;
+    usb_req->start_frame = 0x0;
+    usb_req->number_of_packets = 0x0;
+
+    usb_req->setup = 0x0;
+    //usb_req->devid=0x0;
+    usb_req->direction = 0x00;
+    usb_req->direction = 0x00;
+    usb_req->ep = 0x84;
 
 
 
@@ -308,11 +338,15 @@ void send_corsair_response(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, un
     usb_req->number_of_packets = 0x0;
 
     usb_req->setup = 0x0;
-    usb_req->devid = 0x0;
+    //usb_req->devid = 0x0;
     usb_req->direction = 0x1;
     usb_req->ep = ep;
 
     pack((int*)usb_req, sizeof(USBIP_RET_SUBMIT));
+    printf("Sending back: ");
+    for(int i = 0; i < size; i++)
+        printf("%02x ", (unsigned char)data[i]);
+
 #ifdef _DEBUG
     print_recv((char*)usb_req, sizeof(USBIP_RET_SUBMIT), "SendHeader");
     print_recv(data, size, "SendData");

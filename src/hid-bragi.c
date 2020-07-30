@@ -356,6 +356,7 @@ int  bsize = 0;
 int  seqnum84 = 0;
 int  seqnum83 = 0;
 int  seqnum82 = 0;
+int opmode = 1;
 char response[BSIZE + 1] = {0};
 void handle_data(int sockfd, USBIP_RET_SUBMIT* usb_req, int bl)
 {
@@ -374,24 +375,24 @@ void handle_data(int sockfd, USBIP_RET_SUBMIT* usb_req, int bl)
             {
                 printf("SSEQNUM %d\n", seqnum84);
                 usb_req->seqnum = seqnum84;
-                response[0] = 00;
+                response[0] = 0x00;
                 response[1] = buffer[1];
-                response[2] = 00;
+                response[2] = 0x00;
                 if(buffer[1] == 0x02) // GET
                 {
-                    if(buffer[2] == 03) // "Operating mode"
+                    if(buffer[2] == 0x03) // "Operating mode"
                     {
-                        response[3] = 01;
+                        response[3] = opmode;
                     }
                     else if(buffer[2] == 0x5f) // "MultipointConnectionSupport" according to CUE logs
                     {
-                        //response[3] = 02; // When only this is set, CUE doesn't show the device at all. Possibly thinks it's disconnected?
+                        //response[3] = 0x02; // When only this is set, CUE doesn't show the device at all. Possibly thinks it's disconnected?
                         response[2] = 0x05; // No idea what this means
                         response[3] = 0x40; // No idea what this means
                     }
                     else if(buffer[2] == 0x01) // "Pollrate"
                     {
-                        response[3] = 04; // Pollrate
+                        response[3] = 0x04; // Pollrate
                     }
                     else if(buffer[2] == 0x13) // "FW ver"
                     {
@@ -444,7 +445,10 @@ void handle_data(int sockfd, USBIP_RET_SUBMIT* usb_req, int bl)
                 }
                 else if (buffer[1] == 0x01) // SET
                 {
-                    response[0] = 00;
+                    if(buffer[2] == 0x03) // op mode
+                    {
+                        opmode = buffer[4];
+                    }
                 }
                 else if(buffer[1] == 0x08) // Unknown. Returns some data. "read chunk"?
                 {

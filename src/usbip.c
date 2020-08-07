@@ -256,7 +256,7 @@ void send_usb_req(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsigned in
     print_recv((char*)usb_req, sizeof(USBIP_RET_SUBMIT), "SendString");
 #endif
 
-    if(send(sockfd, merged, sizeof(USBIP_RET_SUBMIT) + size, 0) != sizeof(USBIP_RET_SUBMIT) + size)
+    if((size_t)send(sockfd, merged, sizeof(USBIP_RET_SUBMIT) + size, 0) != sizeof(USBIP_RET_SUBMIT) + size)
     {
         printf("send error : %s \n", strerror (errno));
         free(merged);
@@ -344,7 +344,7 @@ void send_corsair_response(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, un
 
     pack((int*)usb_req, sizeof(USBIP_RET_SUBMIT));
     printf("Sending back: ");
-    for(int i = 0; i < size; i++)
+    for(size_t i = 0; i < size; i++)
         printf("%02x ", (unsigned char)data[i]);
 
 #ifdef _DEBUG
@@ -594,7 +594,7 @@ usbip_run (const USB_DEVICE_DESCRIPTOR* dev_dsc)                                
                         printf ("send error : %s \n", strerror (errno));
                         break;
                     };
-                    if (send (sockfd, (char*)list.interfaces, sizeof(OP_REP_DEVLIST_INTERFACE)*list.device.bNumInterfaces, 0) != sizeof(OP_REP_DEVLIST_INTERFACE)*list.device.bNumInterfaces)
+                    if ((size_t)send (sockfd, (char*)list.interfaces, sizeof(OP_REP_DEVLIST_INTERFACE)*list.device.bNumInterfaces, 0) != sizeof(OP_REP_DEVLIST_INTERFACE)*list.device.bNumInterfaces)
                     {
                         printf ("send error : %s \n", strerror (errno));
                         break;

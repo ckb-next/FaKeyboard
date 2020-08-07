@@ -1,5 +1,5 @@
 CC=cc
-CFLAGS= -Wall -Wextra -Wcast-align -Winit-self -Wno-unused-parameter -DLINUX -g -fsanitize=address
+CFLAGS= -Wall -Wextra -Wcast-align -Winit-self -Wno-unused-parameter -DLINUX -g -fsanitize=address -Wno-address-of-packed-member
 PROGS= hid-keyboard hid-keyboard-wireless hid-keyboard-wireless-wired hid-mouse hid-mousepad hid-mouse-wireless hid-mouse-wireless-wired hid-keyboard-special hid-headset hid-stand hid-node hid-95-legacy hid-y729 hid-bragi
 
 all:	${PROGS}

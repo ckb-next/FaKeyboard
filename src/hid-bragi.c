@@ -351,13 +351,52 @@ const byte corsair_report2[21] =
 };
 
 #define BSIZE 64
-char buffer[BSIZE + 1];
+unsigned char buffer[BSIZE + 1];
 int  bsize = 0;
 int  seqnum84 = 0;
 int  seqnum83 = 0;
 int  seqnum82 = 0;
 int opmode = 1;
 char response[BSIZE + 1] = {0};
+
+typedef struct resource_
+{
+    unsigned char data[61];
+    unsigned int length;
+    unsigned char magic;
+} resource;
+
+#define MAX_HANDLES 10 // Arbitrary number
+resource resources[MAX_HANDLES] = 
+{
+    {{0}, 0, 0x0e},
+    {{0}, 0, 0x0e},
+    {{0}, 0, 0x0e},
+    {{0}, 0, 0x0e},
+    {{0}, 0, 0x0e},
+    {{0x5a, 0x36, 0xbc, 0xd1, 0xe8, 0x5f, 0x4b, 0x76}, 0x08, 0x0e}, // Pairing ID
+    {{0}, 0, 0x0e},
+    {{0}, 0, 0x0e},
+    {{0}, 0, 0x0e},
+    {{0}, 0, 0x0e},
+};
+resource* handlemap[MAX_HANDLES] = {0};
+
+#define RESOURCE_PAIRING_ID 0x05
+/*
+void add_handle(uchar id)
+{
+    for(int i = 0; i < MAX_HANDLES; i++)
+    {
+        if(handlemap[i])
+            continue;
+        handlemap[i] = resources[id];
+        return;
+    }
+    printf("Not enough handles left in map. Please raise MAX_HANDLES\n");
+    exit(1);
+}*/
+
 void handle_data(int sockfd, USBIP_RET_SUBMIT* usb_req, int bl)
 {
     if(usb_req->ep == 0x04)
@@ -416,6 +455,12 @@ void handle_data(int sockfd, USBIP_RET_SUBMIT* usb_req, int bl)
                         response[3] = 0x4c; // PID
                         response[4] = 0x1b; // PID
                     }
+                   /* else if(buffer[2] == 0x40) // Possibly sleep delay?
+                    {
+                        printf("FIXME: Unknown 0x40\n");
+                        response[3] = 0x5;
+                        response[4] = 0x1;
+                    }*/
                     else
                     {
                         printf("!!!!Unhandled GET!!!!\n");
@@ -423,48 +468,60 @@ void handle_data(int sockfd, USBIP_RET_SUBMIT* usb_req, int bl)
                         response[3] = buffer[3];
                     }
                 }
-                else if(buffer[1] == 0x0d) // Download file to computer
+                else if(buffer[1] == 0x0d) // Open handle (byte 2) to resource id (byte 3)
                 {
-                    if(buffer[2] == 0x00 && buffer[3] == 0x05) // Pairing ID
+                    printf("Open handle %hhx %hhx\n", buffer[2], buffer[3]);
+                    if(buffer[3] > MAX_HANDLES - 1 || buffer[2] > MAX_HANDLES - 1)
+                    {
+                        printf("Requested resource id 0x%hhx (0x%hhx). Please raise MAX_HANDLES.\n", buffer[3], buffer[2]);
+                        exit(1);
+                    }
+                    if(handlemap[buffer[2]])
+                    {
+                        printf("Attempted to add duplicate handle 0x%hhx\n", buffer[2]);
+                        exit(1);
+                    }
+                    handlemap[buffer[2]] = resources + buffer[3];
+                    /*if(buffer[3] == 0x05) // Pairing ID
                     {
                         // Wireshark capture has all zeroes here. Odd
                         //memset(response + 2, 0, 40); // Random size that's large enough to wipe junk
                     }
                     else
-                        printf("!!!!Unhandled file download!!!!\n");
+                        printf("!!!!Unhandled handle request!!!!\n");/*/
                 }
-                else if(buffer[1] == 0x09) // No idea
+                else if(buffer[1] == 0x09) // Probe resource. CUE calls it "layout"?
                 {
-                    response[3] = 0x08;
-                    response[4] = 0x0e;
-                    response[5] = 0x08;
+                    response[3] = handlemap[buffer[2]]->length; // Length
+                    response[4] = handlemap[buffer[2]]->magic; // Constant?
+                    response[5] = 0x08; // Length?
                 }
-                else if(buffer[1] == 0x05) // No idea
+                else if(buffer[1] == 0x05) // Close handle
                 {
-                    //memset(response + 2, 0, 40); // Random size that's large enough to wipe junk
+                    if(buffer[2] != 0x01)
+                        printf("Close handle byte is not 1\n");
+                    // Educated guess that buffer[3] is the handle id
+                    handlemap[buffer[3]] = NULL;
                 }
                 else if (buffer[1] == 0x01) // SET
                 {
                     if(buffer[2] == 0x03) // op mode
                     {
                         opmode = buffer[4];
+                        // Close all handles when going to HW mode
+                        // Not confirmed if this is how the devices behave
+                        if(opmode == 1)
+                            memset(handlemap, 0, sizeof(handlemap));
                     }
                 }
                 else if(buffer[1] == 0x08) // Unknown. Returns some data. "read chunk"?
                 {
-                    if(buffer[2] == 0x00)
-                    {
-                        response[3] = 0x5a;
-                        response[4] = 0x36;
-                        response[5] = 0xbc;
-                        response[6] = 0xd1;
-                        response[7] = 0xe8;
-                        response[8] = 0x5f;
-                        response[9] = 0x4b;
-                        response[10] = 0x76;
-                    }
-                    else
-                        printf("Unhandled 0x08 command\n");
+                    // Return data from handle buffer[2]
+                    memcpy(response + 3, handlemap[buffer[2]]->data, 61);
+                }
+                else if(buffer[1] == 0x06) // Write data to device?
+                {
+                    printf("Stub: Writing data to handle 0x%hhx\n", buffer[2]);
                 }
                 else
                 {

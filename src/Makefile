@@ -1,6 +1,6 @@
 CC=cc
 CFLAGS= -Wall -Wextra -Wcast-align -Winit-self -Wno-unused-parameter -DLINUX -g -fsanitize=address -Wno-address-of-packed-member
-PROGS= hid-keyboard hid-keyboard-wireless hid-keyboard-wireless-wired hid-mouse hid-mousepad hid-mouse-wireless hid-mouse-wireless-wired hid-keyboard-special hid-headset hid-stand hid-node hid-95-legacy hid-y729 hid-bragi
+PROGS= hid-keyboard hid-keyboard-wireless hid-keyboard-wireless-wired hid-mouse hid-mousepad hid-mouse-wireless hid-mouse-wireless-wired hid-keyboard-special hid-headset hid-stand hid-node hid-95-legacy hid-y729 hid-bragi hid-bragi-kb
 
 all:	${PROGS}
 
@@ -63,6 +63,10 @@ hid-y729:	usbip.c hid-y729.c
 hid-bragi:	usbip.c hid-bragi.c
 		${CC} ${CFLAGS} usbip.c -c
 		${CC} ${CFLAGS} usbip.o hid-bragi.c -o hid-bragi
+
+hid-bragi-kb:	usbip.c hid-bragi-kb.c
+		${CC} ${CFLAGS} usbip.c -c
+		${CC} ${CFLAGS} usbip.o hid-bragi-kb.c -o hid-bragi-kb
 
 clean:
 		rm -f ${PROGS} core core.* *.o temp.* *.out typescript*

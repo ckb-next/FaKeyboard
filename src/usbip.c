@@ -178,7 +178,7 @@ void send_corsair_req(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsigne
     };
 }
 
-void send_corsair_bragi_req(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsigned int size, unsigned int status)
+void send_corsair_bragi_req(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsigned int size, unsigned int status, unsigned char ep)
 {
     usb_req->command = 0x3;
     usb_req->status = status;
@@ -190,16 +190,12 @@ void send_corsair_bragi_req(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, u
     //usb_req->devid=0x0;
     usb_req->direction = 0x00;
     usb_req->direction = 0x00;
-    usb_req->ep = 0x84;
+    usb_req->ep = ep;
 
 
 
     pack((int*)usb_req, sizeof(USBIP_RET_SUBMIT));
-#ifdef _DEBUG
 
-    print_recv((char*)usb_req, sizeof(USBIP_RET_SUBMIT), "SendHeader");
-    print_recv(data, size, "SendData");
-#endif
     if (send (sockfd, (char*)usb_req, sizeof(USBIP_RET_SUBMIT), 0) != sizeof(USBIP_RET_SUBMIT))
     {
         printf ("send error : %s \n", strerror (errno));

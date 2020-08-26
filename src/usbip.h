@@ -358,6 +358,25 @@ typedef struct __attribute__ ((__packed__)) _CONFIG_HID_BRAGI
     USB_ENDPOINT_DESCRIPTOR dev_ep1;
 } CONFIG_HID_BRAGI;
 
+typedef struct __attribute__ ((__packed__)) _CONFIG_HID_3INTF
+{
+    USB_CONFIGURATION_DESCRIPTOR dev_conf;
+
+    USB_INTERFACE_DESCRIPTOR dev_int0;
+    USB_HID_DESCRIPTOR dev_hid0;
+    USB_ENDPOINT_DESCRIPTOR dev_ep2;
+
+    USB_INTERFACE_DESCRIPTOR dev_int1;
+    USB_HID_DESCRIPTOR dev_hid1;
+    USB_ENDPOINT_DESCRIPTOR dev_ep4_in;
+    USB_ENDPOINT_DESCRIPTOR dev_ep4_out;
+
+    USB_INTERFACE_DESCRIPTOR dev_int2;
+    USB_HID_DESCRIPTOR dev_hid2;
+    USB_ENDPOINT_DESCRIPTOR dev_ep3;
+
+} CONFIG_HID_BRAGI_3INTF;
+
 //Configuration
 typedef struct __attribute__ ((__packed__)) _CONFIG_HID_M45
 {
@@ -603,7 +622,7 @@ typedef struct  __attribute__ ((__packed__)) _StandardDeviceRequest
 
 void send_usb_req(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsigned int size, unsigned int status);
 void send_corsair_req(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsigned int size, unsigned int status);
-void send_corsair_bragi_req(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsigned int size, unsigned int status);
+void send_corsair_bragi_req(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsigned int size, unsigned int status, unsigned char ep);
 void send_corsair_req_in(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsigned int size, unsigned int status);
 void send_corsair_response(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsigned int size, unsigned int status, int ep);
 void send_ctrl_response(int sockfd, USBIP_RET_SUBMIT* usb_req, char* data, unsigned int size, unsigned int status);

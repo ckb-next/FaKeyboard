@@ -407,7 +407,7 @@ void handle_data(int sockfd, USBIP_RET_SUBMIT* usb_req, int bl)
             for(int i = 0; i < bl; i++)
                 printf("%02x ", (unsigned char)buffer[i]);
             puts("");
-            send_corsair_bragi_req(sockfd, usb_req, "", 0x40, 0);
+            send_corsair_bragi_req(sockfd, usb_req, "", 0x40, 0, 0x84);
             // Wipe the previous buffer
             memset(response, 0, 0x40);
             if(buffer[0] == 0x08)
